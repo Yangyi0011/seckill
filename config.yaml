@@ -1,0 +1,8 @@
+app:
+  # 数据源配置信息
+  datasource:
+    driverName: mysql
+    host: localhost:3306
+    baseName: seckill
+    username: root
+    password: toor
