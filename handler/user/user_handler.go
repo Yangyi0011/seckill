@@ -23,7 +23,7 @@ import (
 // @version 1.0
 // @Accept json
 // @Produce  json
-// @Param article body model.RegisterUser true "注册用户"
+// @Param registerUser body model.RegisterUser true "注册用户"
 // @Success 200 object model.Result 成功后返回值
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 注册失败
@@ -58,7 +58,7 @@ func register(registerUser model.RegisterUser) error {
 	}
 	// 查重
 	u, e := user.QueryByUsername()
-	if !errors.Is(e, gorm.ErrRecordNotFound) {
+	if !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFound){
 		return code.DBErr
 	}
 	if u.ID != 0 {
@@ -78,7 +78,7 @@ func register(registerUser model.RegisterUser) error {
 // @version 1.0
 // @Accept json
 // @Produce  json
-// @Param article body model.LoginUser true "用户"
+// @Param loginUser body model.LoginUser true "用户"
 // @Success 200 object model.Result 登录成功
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 登录失败
@@ -112,7 +112,7 @@ func Login(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
-	token, e := generateToken(user)
+	token, e := generateToken(u)
 	if e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
@@ -143,6 +143,7 @@ func generateToken(user model.User) (string, error) {
 	j := secret.NewJWT()
 	expiresTime := time.Now().Add(secret.ExpiresTime * time.Second).Unix()
 	claims := secret.CustomClaims{
+		UserId: user.ID,
 		Username: user.Username,
 		Password: user.Password,
 		Kind:     user.Kind,
