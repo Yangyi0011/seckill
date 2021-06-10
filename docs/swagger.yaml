@@ -1,4 +1,46 @@
 definitions:
+  model.GoodsDTO:
+    properties:
+      amount:
+        default: 0
+        minimum: 1
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: integer
+      img:
+        type: string
+      name:
+        type: string
+      originPrice:
+        default: 0
+        minimum: 0
+        type: number
+      price:
+        default: 0
+        minimum: 0
+        type: number
+      startTime:
+        type: string
+      stock:
+        default: 0
+        minimum: 0
+        type: integer
+      updatedAt:
+        type: string
+    required:
+    - amount
+    - endTime
+    - name
+    - price
+    - startTime
+    - stock
+    type: object
   model.LoginUser:
     properties:
       password:
@@ -40,6 +82,65 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/goods:
+    post:
+      consumes:
+      - application/json
+      description: 添加秒杀商品进秒杀系统
+      parameters:
+      - description: 秒杀商品传输信息
+        in: body
+        name: goods
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoodsDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 添加商品
+      tags:
+      - 商品管理
+  /api/goods/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过 id 查询秒杀商品
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 查询商品
+      tags:
+      - 商品管理
   /api/user/login:
     post:
       consumes:
@@ -48,7 +149,7 @@ paths:
       parameters:
       - description: 用户
         in: body
-        name: article
+        name: loginUser
         required: true
         schema:
           $ref: '#/definitions/model.LoginUser'
@@ -93,7 +194,7 @@ paths:
       parameters:
       - description: 注册用户
         in: body
-        name: article
+        name: registerUser
         required: true
         schema:
           $ref: '#/definitions/model.RegisterUser'

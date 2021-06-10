@@ -24,6 +24,96 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/goods": {
+            "post": {
+                "description": "添加秒杀商品进秒杀系统",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "商品管理"
+                ],
+                "summary": "添加商品",
+                "parameters": [
+                    {
+                        "description": "秒杀商品传输信息",
+                        "name": "goods",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GoodsDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/goods/{id}": {
+            "get": {
+                "description": "通过 id 查询秒杀商品",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "商品管理"
+                ],
+                "summary": "查询商品",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Result"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/login": {
             "post": {
                 "description": "用户登录签发 JWT",
@@ -40,7 +130,7 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "用户",
-                        "name": "article",
+                        "name": "loginUser",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -109,7 +199,7 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "注册用户",
-                        "name": "article",
+                        "name": "registerUser",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -141,6 +231,63 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.GoodsDTO": {
+            "type": "object",
+            "required": [
+                "amount",
+                "endTime",
+                "name",
+                "price",
+                "startTime",
+                "stock"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 1
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "img": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "originPrice": {
+                    "type": "number",
+                    "default": 0,
+                    "minimum": 0
+                },
+                "price": {
+                    "type": "number",
+                    "default": 0,
+                    "minimum": 0
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "model.LoginUser": {
             "type": "object",
             "required": [
