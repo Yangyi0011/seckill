@@ -1,0 +1,19 @@
+### 通过 id 查询商品
+GET http://localhost:8080/api/goods/1
+Accept: application/json
+
+### 添加秒杀商品
+POST http://localhost:8080/api/goods
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjMzMzMyNDMsImp0aSI6IjEiLCJpYXQiOjE2MjMzMzE0NDMsImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzMzMxNDQzLCJzdWIiOiJhdXRoIn0.DiqmjtliOJHbP5qYZIKI3fQXYLPwWsDB5BBlIRlXBMo
+
+{
+  "amount": 100,
+  "name": "测试商品-1",
+  "originPrice": 10,
+  "price": 1.5,
+  "startTime": "2021-06-18 00:00:00",
+  "stock": 100
+}
+
+###
