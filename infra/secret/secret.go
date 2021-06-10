@@ -20,9 +20,10 @@ const (
 
 // CustomClaims 自定义 Claims，继承 jwt.StandardClaims 并添加一些自己需要的信息
 type CustomClaims struct {
+	UserId uint `json:"userId"`
 	Username string `json:"username"`
 	Password string `json:"password"`
-	Kind     int `json:"kind"`
+	Kind     int8 `json:"kind"`
 	jwt.StandardClaims
 }
 
