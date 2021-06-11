@@ -7,8 +7,8 @@ import (
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 	"gopkg.in/go-playground/validator.v9"
 	"reflect"
+	"seckill/handler"
 	"seckill/handler/goods"
-	"seckill/handler/user"
 	"seckill/middleware"
 	"seckill/model"
 
@@ -29,7 +29,7 @@ func init() {
 	}
 }
 
-// ValidateJSONDateType 解决验证器 binding:"required" 无法正常工作
+// ValidateJSONDateType 解决验证器 binding:"required" 无法正常工作的问题
 func ValidateJSONDateType(field reflect.Value) interface{} {
 	if field.Type() == reflect.TypeOf(model.LocalTime{}) {
 		timeStr := field.Interface().(model.LocalTime).String()
@@ -54,9 +54,9 @@ func userRouter() {
 	{
 		userGroup := api.Group("/user")
 		{
-			userGroup.POST("/register", user.Register)
-			userGroup.POST("/login", user.Login)
-			userGroup.POST("/logout", user.Logout)
+			userGroup.POST("/register", handler.UserHandler.Register)
+			userGroup.POST("/login", handler.UserHandler.Login)
+			userGroup.POST("/logout", handler.UserHandler.Logout)
 		}
 
 		testGroup := api.Group("/test")

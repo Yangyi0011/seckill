@@ -1,20 +1,36 @@
 package user
 
 import (
-	"errors"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	"log"
 	"net/http"
-	"seckill/infra/code"
-	"seckill/infra/secret"
-	"seckill/infra/utils/bean"
 	"seckill/infra/utils/response"
 	"seckill/model"
-	"strconv"
-	"time"
+	"seckill/service"
+	"sync"
 )
+
+var (
+	once sync.Once
+)
+
+type UserHandler struct {
+	userService service.IUserService
+}
+
+// NewUserHandler 创建一个 UserHandler 实例
+func NewUserHandler() *UserHandler {
+	return &UserHandler{
+		userService: service.UserService,
+	}
+}
+
+// SingleUserHandler UserHandler 单例模式
+func SingleUserHandler() (h *UserHandler) {
+	once.Do(func() {
+		h = NewUserHandler()
+	})
+	return
+}
 
 // Register go doc
 // @Summary 用户注册
@@ -28,7 +44,7 @@ import (
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 注册失败
 // @Router /api/user/register [post]
-func Register(ctx *gin.Context) {
+func (h *UserHandler) Register(ctx *gin.Context) {
 	registerUser := model.RegisterUser{}
 	result := model.Result{}
 	// 数据绑定
@@ -37,7 +53,7 @@ func Register(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
-	if e := register(registerUser); e != nil {
+	if e := h.userService.Register(registerUser); e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
 		response.Fail(ctx, result)
@@ -47,28 +63,6 @@ func Register(ctx *gin.Context) {
 	result.Message = "注册成功"
 	response.Success(ctx, result)
 	return
-}
-
-func register(registerUser model.RegisterUser) error {
-	// 数据转换
-	user := model.User{}
-	if e := bean.SimpleCopyProperties(&user, registerUser); e != nil {
-		log.Println(code.ConvertErr.Error(), e.Error())
-		return code.ConvertErr
-	}
-	// 查重
-	u, e := user.QueryByUsername()
-	if !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFound){
-		return code.DBErr
-	}
-	if u.ID != 0 {
-		return code.UsernameExistedErr
-	}
-	// 数据保存
-	if e = user.Insert(); e != nil {
-		return e
-	}
-	return nil
 }
 
 // Login go doc
@@ -83,7 +77,7 @@ func register(registerUser model.RegisterUser) error {
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 登录失败
 // @Router /api/user/login [post]
-func Login(ctx *gin.Context) {
+func (h *UserHandler) Login(ctx *gin.Context) {
 	loginUser := model.LoginUser{}
 	result := model.Result{}
 	// 数据绑定
@@ -92,27 +86,7 @@ func Login(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
-	// 数据转换
-	var user model.User
-	if e := bean.SimpleCopyProperties(&user, loginUser); e != nil {
-		log.Println(code.ConvertErr.Error(), e.Error())
-		result.Code = http.StatusInternalServerError
-		result.Message = code.ConvertErr.Error()
-		response.Fail(ctx, result)
-		return
-	}
-	// 通过 username 到数据库查询数据来对比
-	u, e := user.QueryByUsername()
-	if e != nil || u.Password != user.Password {
-		if e != nil {
-			log.Println(e)
-		}
-		result.Code = http.StatusInternalServerError
-		result.Message = code.AuthErr.Error()
-		response.Fail(ctx, result)
-		return
-	}
-	token, e := generateToken(u)
+	token, e := h.userService.Login(loginUser)
 	if e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
@@ -129,42 +103,6 @@ func Login(ctx *gin.Context) {
 	return
 }
 
-// 生成 Token
-func generateToken(user model.User) (string, error) {
-	if user.Username == "" {
-		return "", errors.New("请先注册")
-	}
-	// 查出最新的用户数据
-	user, err := user.QueryByUsername()
-	if err != nil {
-		return "", err
-	}
-	// 签发 JWT
-	j := secret.NewJWT()
-	expiresTime := time.Now().Add(secret.ExpiresTime * time.Second).Unix()
-	claims := secret.CustomClaims{
-		UserId: user.ID,
-		Username: user.Username,
-		Password: user.Password,
-		Kind:     user.Kind,
-		StandardClaims: jwt.StandardClaims{
-			Audience:  user.Username,              // 受众
-			ExpiresAt: expiresTime,                // 失效时间
-			Id:        strconv.Itoa(int(user.ID)), // 编号
-			IssuedAt:  time.Now().Unix(),          // 签发时间
-			Issuer:    secret.Issuer,              // 签发人
-			NotBefore: time.Now().Unix(),          // 生效时间
-			Subject:   "auth",                     // 主题
-		},
-	}
-	// 获取 token
-	token, err := j.CreateToken(claims)
-	if err != nil {
-		return "", err
-	}
-	return token, nil
-}
-
 // Logout go doc
 // @Summary 退出登录
 // @Description 用户退出登录，清除登录 token
@@ -174,13 +112,9 @@ func generateToken(user model.User) (string, error) {
 // @Produce  json
 // @Success 200 object model.Result 登录成功
 // @Router /api/user/logout [post]
-func Logout(ctx *gin.Context) {
+func (h *UserHandler) Logout(ctx *gin.Context) {
 	auth := ctx.Request.Header.Get("Authorization")
-	if len(auth) > 0 {
-		// 退出时使 token 失效
-		j := secret.NewJWT()
-		_ = j.InvalidToken(auth)
-	}
+	h.userService.Logout(auth)
 	result := model.Result{}
 	result.Code = http.StatusOK
 	result.Message = "退出成功"

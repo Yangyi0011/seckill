@@ -1,12 +1,8 @@
 package model
 
 import (
-	"errors"
-	"github.com/jinzhu/gorm"
 	"log"
-	"seckill/infra/code"
 	"seckill/infra/db"
-	"time"
 )
 
 const (
@@ -48,25 +44,4 @@ func init() {
 		log.Printf("正在创建 %s 表\n", u.TableName())
 		db.DB.Debug().CreateTable(u)
 	}
-}
-
-// Insert 添加用户
-func (u User) Insert() error {
-	u.CreatedAt = LocalTime(time.Now())
-	if e := db.DB.Debug().Create(&u).Error; e != nil {
-		return code.DBErr
-	}
-	return nil
-}
-
-// QueryByUsername 通过 username 查询用户信息
-func (u User) QueryByUsername() (User, error) {
-	var user User
-	if e := db.DB.Debug().Where("username = ?", u.Username).Take(&user).Error; e != nil {
-		if errors.Is(e, gorm.ErrRecordNotFound) {
-			return user, code.RecordNotFound
-		}
-		return user, code.DBErr
-	}
-	return user, nil
 }
