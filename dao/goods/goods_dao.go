@@ -54,7 +54,7 @@ func (d *goodsDao) Insert(g model.Goods) error {
 
 // Update 更新数据
 func (d *goodsDao) Update(g model.Goods) error {
-	if e := db.DB.Debug().Updates(&g).Error; e != nil {
+	if e := db.DB.Debug().Model(&g).Updates(&g).Error; e != nil {
 		log.Println(e)
 		return e
 	}

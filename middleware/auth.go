@@ -9,6 +9,7 @@ import (
 	"seckill/model"
 )
 
+// Auth 登录用户认证
 func Auth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		result := model.Result{}
