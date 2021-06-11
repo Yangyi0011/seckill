@@ -84,7 +84,8 @@ func customRouter() {
 		goodsGroup := api.Group("/goods")
 		{
 			goodsGroup.GET("/:id", handler.GoodsHandler.QueryGoodsVOByID)
-			goodsGroup.POST("/", middleware.Auth(), handler.GoodsHandler.Insert)
+			goodsGroup.POST("/", middleware.Auth(), middleware.SellerAuth(), handler.GoodsHandler.Insert)
+			goodsGroup.PUT("/", middleware.Auth(), middleware.SellerAuth(), handler.GoodsHandler.Update)
 		}
 	}
 }
