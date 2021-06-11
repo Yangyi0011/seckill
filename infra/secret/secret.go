@@ -11,7 +11,7 @@ const (
 	// SecKey 服务器密钥
 	SecKey = "hello second kill"
 	// ExpiresTime JWT 过期时间，单位：秒
-	ExpiresTime = 60*30
+	ExpiresTime = 60*60
 	// Issuer JWT 签发人
 	Issuer      = "second kill"
 	// TokenPrefix JWT 生成 token 所添加的前缀

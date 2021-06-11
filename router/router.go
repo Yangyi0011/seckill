@@ -53,7 +53,7 @@ func InitRouter() * gin.Engine{
 // @title Gin swagger
 // @version 1.0
 // @description Gin swagger 示例项目
-// @contact.name yangyi
+// @contact.name 清影
 // @contact.email 1024569696@qq.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
@@ -86,6 +86,7 @@ func customRouter() {
 			goodsGroup.GET("/:id", handler.GoodsHandler.QueryGoodsVOByID)
 			goodsGroup.POST("/", middleware.Auth(), middleware.SellerAuth(), handler.GoodsHandler.Insert)
 			goodsGroup.PUT("/", middleware.Auth(), middleware.SellerAuth(), handler.GoodsHandler.Update)
+			goodsGroup.DELETE("/:id", middleware.Auth(), middleware.SellerAuth(), handler.GoodsHandler.Delete)
 		}
 	}
 }

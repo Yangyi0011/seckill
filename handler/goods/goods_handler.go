@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"seckill/infra/code"
 	"seckill/infra/secret"
+	"seckill/infra/utils/request"
 	"seckill/infra/utils/response"
 	"seckill/model"
 	"seckill/service"
@@ -45,7 +46,7 @@ func SingleUserHandler() (h *GoodsHandler) {
 // @Param id path int true "id" "秒杀商品信息"
 // @Success 200 object model.Result model.GoodsVO 成功后返回值
 // @Failure 400 object model.Result 请求参数有误
-// @Failure 500 object model.Result 添加失败
+// @Failure 500 object model.Result 操作失败
 // @Router /api/goods/{id} [GET]
 func (h *GoodsHandler) QueryGoodsVOByID(ctx *gin.Context) {
 	result := model.Result{}
@@ -82,7 +83,7 @@ func (h *GoodsHandler) QueryGoodsVOByID(ctx *gin.Context) {
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 401 object model.Result 需要登录
 // @Failure 403 object model.Result 没有操作权限
-// @Failure 500 object model.Result 添加失败
+// @Failure 500 object model.Result 操作失败
 // @Router /api/goods [post]
 func (h *GoodsHandler) Insert(ctx *gin.Context) {
 	result := model.Result{}
@@ -139,20 +140,10 @@ func (h *GoodsHandler) Insert(ctx *gin.Context) {
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 401 object model.Result 需要登录
 // @Failure 403 object model.Result 没有操作权限
-// @Failure 500 object model.Result 添加失败
+// @Failure 500 object model.Result 操作失败
 // @Router /api/goods [put]
 func (h *GoodsHandler) Update(ctx *gin.Context) {
 	result := model.Result{}
-	// 获取当前用户数据
-	var claims *secret.CustomClaims
-	c, ok := ctx.Get("claims")
-	claims, ok = c.(*secret.CustomClaims)
-	if !ok || claims == nil {
-		result.Code = http.StatusUnauthorized
-		result.Message = code.TokenInvalidErr.Error()
-		response.Fail(ctx, result)
-		return
-	}
 	dto := model.GoodsDTO{}
 	// 数据绑定
 	if e := ctx.BindJSON(&dto); e != nil {
@@ -160,6 +151,15 @@ func (h *GoodsHandler) Update(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
+	// 获取当前用户数据
+	claims, err := request.GetCurrentCustomClaims(ctx)
+	if err != nil {
+		result.Code = http.StatusUnauthorized
+		result.Message = err.Error()
+		response.Fail(ctx, result)
+		return
+	}
+
 	// 查询商品信息
 	goods, _ := h.goodsService.FindGoodsByID(int(dto.ID))
 	// 商家只能更新自己的商品信息
@@ -171,6 +171,58 @@ func (h *GoodsHandler) Update(ctx *gin.Context) {
 	}
 	if e := h.goodsService.Update(dto); e != nil {
 		result.Code = http.StatusInternalServerError
+		result.Message = e.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	response.Success(ctx, result)
+	return
+}
+
+// Delete go doc
+// @Summary 删除商品
+// @Description 通过 id 删除商品信息
+// @Tags 商品管理
+// @version 1.0
+// @Accept json
+// @Produce  json
+// @Param id path int true "id" "秒杀商品信息"
+// @Success 200 object model.Result 成功后返回值
+// @Failure 400 object model.Result 请求参数有误
+// @Failure 401 object model.Result 需要登录
+// @Failure 403 object model.Result 没有操作权限
+// @Failure 500 object model.Result 操作失败
+// @Router /api/goods/{id} [DELETE]
+func (h *GoodsHandler) Delete(ctx *gin.Context) {
+	result := model.Result{}
+	idStr := ctx.Param("id")
+	id, e := strconv.Atoi(idStr)
+	if  e != nil || id == 0 {
+		result.Code = http.StatusBadRequest
+		result.Message = code.RequestParamErr.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	// 获取当前用户数据
+	claims, err := request.GetCurrentCustomClaims(ctx)
+	if err != nil {
+		result.Code = http.StatusUnauthorized
+		result.Message = err.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	// 查询商品信息
+	goods, _ := h.goodsService.FindGoodsByID(id)
+	// 商家只能删除自己的商品信息
+	if goods.UserId != claims.UserId {
+		result.Code = http.StatusForbidden
+		result.Message = code.StatusForbiddenErr.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	e = h.goodsService.DeleteWithLogic(id)
+	if e != nil {
+		result.Code = http.StatusBadRequest
 		result.Message = e.Error()
 		response.Fail(ctx, result)
 		return
