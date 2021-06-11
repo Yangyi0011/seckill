@@ -8,7 +8,6 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 	"reflect"
 	"seckill/handler"
-	"seckill/handler/goods"
 	"seckill/middleware"
 	"seckill/model"
 
@@ -45,11 +44,27 @@ func ValidateJSONDateType(field reflect.Value) interface{} {
 
 func InitRouter() * gin.Engine{
 	swaggerRouter()
-	userRouter()
+	customRouter()
 	return myRouter
 }
 
-func userRouter() {
+// SwaggerRouter swagger 路由
+// 文档访问地址：http://localhost:8080/swagger/index.html
+// @title Gin swagger
+// @version 1.0
+// @description Gin swagger 示例项目
+// @contact.name yangyi
+// @contact.email 1024569696@qq.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost:8080
+func swaggerRouter() {
+	// The url pointing to API definition
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	myRouter.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+}
+
+func customRouter() {
 	api := myRouter.Group("/api")
 	{
 		userGroup := api.Group("/user")
@@ -68,24 +83,8 @@ func userRouter() {
 
 		goodsGroup := api.Group("/goods")
 		{
-			goodsGroup.GET("/:id", goods.QueryGoodsVOByID)
-			goodsGroup.POST("/", middleware.Auth(), goods.Insert)
+			goodsGroup.GET("/:id", handler.GoodsHandler.QueryGoodsVOByID)
+			goodsGroup.POST("/", middleware.Auth(), handler.GoodsHandler.Insert)
 		}
 	}
-}
-
-// SwaggerRouter swagger 路由
-// 文档访问地址：http://localhost:8080/swagger/index.html
-// @title Gin swagger
-// @version 1.0
-// @description Gin swagger 示例项目
-// @contact.name yangyi
-// @contact.email 1024569696@qq.com
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8080
-func swaggerRouter() {
-	// The url pointing to API definition
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
-	myRouter.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 }

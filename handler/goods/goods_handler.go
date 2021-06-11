@@ -7,8 +7,33 @@ import (
 	"seckill/infra/secret"
 	"seckill/infra/utils/response"
 	"seckill/model"
+	"seckill/service"
 	"strconv"
+	"sync"
 )
+
+var (
+	once sync.Once
+)
+
+type GoodsHandler struct {
+	goodsService service.IGoodsService
+}
+
+// NewGoodsHandler 创建一个 GoodsHandler 实例
+func NewGoodsHandler() *GoodsHandler {
+	return &GoodsHandler{
+		goodsService: service.GoodsService,
+	}
+}
+
+// SingleUserHandler UserHandler 单例模式
+func SingleUserHandler() (h *GoodsHandler) {
+	once.Do(func() {
+		h = NewGoodsHandler()
+	})
+	return
+}
 
 // Insert go doc
 // @Summary 添加商品
@@ -22,7 +47,7 @@ import (
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 添加失败
 // @Router /api/goods [post]
-func Insert(ctx *gin.Context) {
+func (h *GoodsHandler) Insert(ctx *gin.Context) {
 	result := model.Result{}
 	// 获取当前用户数据
 	var claims *secret.CustomClaims
@@ -40,7 +65,13 @@ func Insert(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
-
+	// 不是卖家不能添加商品
+	if claims.Kind != model.NormalSeller {
+		result.Code = http.StatusForbidden
+		result.Message = code.StatusForbiddenErr.Error()
+		response.Fail(ctx, result)
+		return
+	}
 	dto := model.GoodsDTO{}
 	// 数据绑定
 	if e := ctx.BindJSON(&dto); e != nil {
@@ -49,8 +80,7 @@ func Insert(ctx *gin.Context) {
 		return
 	}
 	dto.UserId = claims.UserId
-	g := model.Goods{}
-	if e := g.Insert(dto); e != nil {
+	if e := h.goodsService.Insert(dto); e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
 		response.Fail(ctx, result)
@@ -72,7 +102,7 @@ func Insert(ctx *gin.Context) {
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 添加失败
 // @Router /api/goods/{id} [GET]
-func QueryGoodsVOByID(ctx *gin.Context) {
+func (h *GoodsHandler) QueryGoodsVOByID(ctx *gin.Context) {
 	result := model.Result{}
 	idStr := ctx.Param("id")
 	id, e := strconv.Atoi(idStr)
@@ -82,12 +112,8 @@ func QueryGoodsVOByID(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
-	goods := model.Goods{
-		Model:       model.Model{
-			ID:        uint(id),
-		},
-	}
-	g, e := goods.QueryGoodsVOByID()
+
+	g, e := h.goodsService.FindGoodsVOByID(id)
 	if e != nil {
 		result.Code = http.StatusBadRequest
 		result.Message = e.Error()

@@ -21,7 +21,7 @@ type LoginUser struct {
 // RegisterUser 用户注册DTO
 type RegisterUser struct {
 	LoginUser
-	Kind int `json:"kind" example:"0"`
+	Kind int8 `json:"kind" example:"0"`
 }
 
 // User 用户模型DO

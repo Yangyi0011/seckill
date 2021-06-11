@@ -17,6 +17,7 @@ var (
 	TokenNotValidYetErr = buildCode(5103, "账号未激活")
 	TokenMalformedErr   = buildCode(5104, "非法令牌")
 	TokenInvalidErr     = buildCode(5105, "无效令牌")
+	StatusForbiddenErr = buildCode(51006, "没有操作权限")
 
 	// 与商品相关的错误，范围：[5300,5400)
 	GoodsSaleOut    = buildCode(5200, "商品已售罄")

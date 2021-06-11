@@ -48,7 +48,7 @@ func (s *userService) Register(registerUser model.RegisterUser) error {
 	}
 	// 查重
 	u, e := s.FindByUsername(user.Username)
-	if !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFound){
+	if e != nil && !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFound){
 		return code.DBErr
 	}
 	if u.ID != 0 {
