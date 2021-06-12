@@ -47,7 +47,7 @@ type Redis struct {
 
 // Order 订单配置信息
 type Order struct {
-	Expire int64 `yaml:"expire"`
+	Expiration int64 `yaml:"expiration"`
 }
 
 // 装载配置信息
