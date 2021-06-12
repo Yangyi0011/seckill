@@ -68,6 +68,10 @@ func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.G
 		sql.WriteString("and price = ")
 		sql.WriteString(fmt.Sprintf("%d ", c.Stock))
 	}
+	if c.UserId != 0 {
+		sql.WriteString("and user_id = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.UserId))
+	}
 	if c.StartTime != timeZero {
 		sql.WriteString("and start_time = ")
 		sql.WriteString("'")
@@ -84,7 +88,8 @@ func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.G
 	if c.Index != 0 {
 		offset = (c.Index-1)*c.Size
 	}
-	limit := 0
+	// 默认每页 10 条数据
+	limit := 10
 	if c.Size != 0 {
 		limit = c.Size
 	}

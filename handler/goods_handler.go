@@ -82,6 +82,9 @@ func (h *GoodsHandler) QueryGoodsVOByCondition(ctx *gin.Context) {
 		response.Fail(ctx, result)
 		return
 	}
+	// 默认查询当前登录人的数据
+	claims, _ := request.GetCurrentCustomClaims(ctx)
+	condition.UserId = claims.UserId
 	if list, e = h.goodsService.FindByCondition(condition); e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
@@ -89,6 +92,33 @@ func (h *GoodsHandler) QueryGoodsVOByCondition(ctx *gin.Context) {
 		return
 	}
 	result.Data = list
+	response.Success(ctx, result)
+	return
+}
+
+// SecondKillGoodsInit go doc
+// @Summary 初始化秒杀商品
+// @Description 初始化当前商家的秒杀商品去参与秒杀活动
+// @Tags 商品管理
+// @version 1.0
+// @Accept json
+// @Produce  json
+// @Success 200 object model.Result 成功后返回值
+// @Failure 400 object model.Result 请求参数有误
+// @Failure 401 object model.Result 需要登录
+// @Failure 403 object model.Result 没有操作权限
+// @Failure 500 object model.Result 操作失败
+// @Router /api/goods/seckillInit [POST]
+func (h *GoodsHandler) SecondKillGoodsInit(ctx *gin.Context) {
+	result := model.Result{}
+	// 默认查询当前登录人的数据
+	claims, _ := request.GetCurrentCustomClaims(ctx)
+	if e := h.goodsService.InitScekillGoods(int(claims.UserId)); e != nil {
+		result.Code = http.StatusInternalServerError
+		result.Message = e.Error()
+		response.Fail(ctx, result)
+		return
+	}
 	response.Success(ctx, result)
 	return
 }

@@ -310,6 +310,17 @@ func (s *goodsService) IncrStock(goodsId int) (err error) {
 	return
 }
 
-func (s *goodsService) InitScekillGoods() (e error){
-	return e
+func (s *goodsService) InitScekillGoods(userId int) (e error){
+	var list []model.Goods
+	if list, e = s.dao.QueryByCondition(model.GoodsQueryCondition{UserId: uint(userId)}); e != nil {
+		log.Println(e)
+		e = code.DBErr
+		return
+	}
+	for _, v := range list {
+		if e = s.SetGoodsStock(int(v.ID), v.Stock); e != nil {
+			return
+		}
+	}
+	return
 }

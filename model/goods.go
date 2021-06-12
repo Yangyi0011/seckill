@@ -58,6 +58,7 @@ type GoodsQueryCondition struct {
 	Stock     int       `json:"stock"`
 	StartTime LocalTime `json:"startTime"`
 	EndTime   LocalTime `json:"endTime"`
+	UserId    uint      `json:"userId" swaggerignore:"true"`
 }
 
 // TableName 继承接口指定表名

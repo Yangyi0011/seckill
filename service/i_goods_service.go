@@ -41,5 +41,5 @@ type IGoodsService interface {
 	IncrStock(goodsId int) (err error)
 
 	// InitScekillGoods 初始化参加秒杀的商品
-	InitScekillGoods() (e error)
+	InitScekillGoods(userId int) (e error)
 }
