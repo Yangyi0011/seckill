@@ -52,6 +52,7 @@ type GoodsVO struct {
 // GoodsQueryCondition 商品查询条件
 type GoodsQueryCondition struct {
 	Model
+	PageDTO
 	Name      string    `json:"name"`
 	Price     float64   `json:"price"`
 	Stock     int       `json:"stock"`

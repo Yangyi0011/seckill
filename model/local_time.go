@@ -5,7 +5,9 @@ import (
 	"time"
 )
 
-const TimeFormat = "2006-01-02 15:04:05"
+const (
+	TimeFormat = "2006-01-02 15:04:05"
+)
 
 // LocalTime 自定义 LocalTime 转换规则，以支持 yyyy-MM-dd HH:mm:ss 格式
 type LocalTime time.Time
@@ -44,4 +46,9 @@ func (t *LocalTime) Scan(v interface{}) error {
 
 func (t LocalTime) String() string {
 	return time.Time(t).Format(TimeFormat)
+}
+
+func (t LocalTime) ZeroValue() LocalTime {
+	zero, _ := time.Parse("2006-01-02 15:04:05 +0800 CST", "0001-01-01 00:00:00")
+	return LocalTime(zero)
 }
