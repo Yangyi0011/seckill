@@ -184,8 +184,21 @@ func (s *goodsService) FindGoodsVOByID(id int) (vo model.GoodsVO, e error) {
 }
 
 func (s *goodsService) FindByCondition(c model.GoodsQueryCondition) ([]model.GoodsVO, error) {
-	//db.DB.Exec("select * from")
-	return []model.GoodsVO{}, nil
+	goodsList, e := s.dao.QueryByCondition(c)
+	if e != nil {
+		log.Println(e)
+		e = code.DBErr
+		return nil, e
+	}
+	list := make([]model.GoodsVO, 0)
+	for _, v := range goodsList {
+		vo, err := s.ToVO(v)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, vo)
+	}
+	return list, nil
 }
 
 func (s *goodsService) Insert(dto model.GoodsDTO) error {
@@ -295,4 +308,8 @@ func (s *goodsService) IncrStock(goodsId int) (err error) {
 		err = code.RedisErr
 	}
 	return
+}
+
+func (s *goodsService) InitScekillGoods() (e error){
+	return e
 }

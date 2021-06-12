@@ -1,7 +1,9 @@
 package goods
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"log"
 	"seckill/infra/code"
@@ -26,9 +28,72 @@ func (d *goodsDao) QueryGoodsByID(id int) (g model.Goods, e error) {
 	return
 }
 
-func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) ([]model.Goods, error) {
-	//db.DB.Exec("select * from")
-	return []model.Goods{}, nil
+func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.Goods, e error) {
+	timeZero := model.LocalTime{}.ZeroValue()
+	var sql bytes.Buffer
+	sql.WriteString("1 = 1 ")
+	if c.ID != 0 {
+		sql.WriteString("and id = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.ID))
+	}
+	if c.CreatedAt != timeZero {
+		sql.WriteString("and create_at = ")
+		sql.WriteString("'")
+		sql.WriteString(c.CreatedAt.String())
+		sql.WriteString("' ")
+	}
+	if c.UpdatedAt != timeZero {
+		sql.WriteString("and update_at = ")
+		sql.WriteString("'")
+		sql.WriteString(c.UpdatedAt.String())
+		sql.WriteString("' ")
+	}
+	if c.DeletedAt != nil && (*c.DeletedAt) != timeZero {
+		sql.WriteString("and delete_at = ")
+		sql.WriteString("'")
+		sql.WriteString(c.DeletedAt.String())
+		sql.WriteString("' ")
+	}
+	if c.Name != "" {
+		sql.WriteString("and name like ")
+		sql.WriteString("'%")
+		sql.WriteString(c.Name)
+		sql.WriteString("%' ")
+	}
+	if c.Price != 0.0 {
+		sql.WriteString("and price = ")
+		sql.WriteString(fmt.Sprintf("%f ", c.Price))
+	}
+	if c.Stock != 0 {
+		sql.WriteString("and price = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.Stock))
+	}
+	if c.StartTime != timeZero {
+		sql.WriteString("and start_time = ")
+		sql.WriteString("'")
+		sql.WriteString(c.StartTime.String())
+		sql.WriteString("' ")
+	}
+	if c.EndTime != timeZero {
+		sql.WriteString("and end_time = ")
+		sql.WriteString("'")
+		sql.WriteString(c.EndTime.String())
+		sql.WriteString("' ")
+	}
+	offset := 0
+	if c.Index != 0 {
+		offset = (c.Index-1)*c.Size
+	}
+	limit := 0
+	if c.Size != 0 {
+		limit = c.Size
+	}
+	if e = d.db.Debug().Limit(limit).Offset(offset).Find(&list, sql.String()).Error; e != nil {
+		log.Println(e)
+		e = code.DBErr
+		return
+	}
+	return
 }
 
 func (d *goodsDao) Insert(g model.Goods) error {

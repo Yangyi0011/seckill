@@ -58,6 +58,41 @@ func (h *GoodsHandler) QueryGoodsVOByID(ctx *gin.Context) {
 	return
 }
 
+// QueryGoodsVOByCondition go doc
+// @Summary 查询商品
+// @Description 通过 条件 查询秒杀商品
+// @Tags 商品管理
+// @version 1.0
+// @Accept json
+// @Produce  json
+// @Param condition body model.GoodsQueryCondition true "商品信息条件"
+// @Success 200 object model.Result 成功后返回值
+// @Failure 400 object model.Result 请求参数有误
+// @Failure 500 object model.Result 操作失败
+// @Router /api/goods/list [POST]
+func (h *GoodsHandler) QueryGoodsVOByCondition(ctx *gin.Context) {
+	var (
+		result model.Result
+		condition model.GoodsQueryCondition
+		e error
+		list []model.GoodsVO
+	)
+	if e = ctx.BindJSON(&condition); e != nil {
+		result.Message = e.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	if list, e = h.goodsService.FindByCondition(condition); e != nil {
+		result.Code = http.StatusInternalServerError
+		result.Message = e.Error()
+		response.Fail(ctx, result)
+		return
+	}
+	result.Data = list
+	response.Success(ctx, result)
+	return
+}
+
 // Insert go doc
 // @Summary 添加商品
 // @Description 添加秒杀商品进秒杀系统

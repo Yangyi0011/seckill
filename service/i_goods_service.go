@@ -39,4 +39,7 @@ type IGoodsService interface {
 
 	// IncrStock 商品库存缓存原子 +1，并返回添加后的当前库存
 	IncrStock(goodsId int) (err error)
+
+	// InitScekillGoods 初始化参加秒杀的商品
+	InitScekillGoods() (e error)
 }
