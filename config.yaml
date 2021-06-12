@@ -6,6 +6,11 @@ app:
     baseName: seckill
     username: root
     password: toor
+  # redis 配置信息
   redis:
     host: 192.168.1.104:6379
     password:
+  # 订单配置信息
+  order:
+    # 订单超时时间：秒
+    expire: 1800
