@@ -10,6 +10,7 @@ import (
 	"seckill/infra/secret"
 	"seckill/infra/utils/bean"
 	"seckill/model"
+	"seckill/service"
 	"strconv"
 	"sync"
 	"time"
@@ -19,24 +20,23 @@ var (
 	once sync.Once
 )
 
+// InitService 单例模式初始化 IUserService 接口实例
+func InitService() {
+	once.Do(func() {
+		service.UserService = newUserService()
+	})
+}
+
 // service.IUserService 接口实现
 type userService struct {
 	dao dao.IUserDao
 }
 
-// NewUserService 创建一个 service.IUserService 接口实例
-func NewUserService() *userService {
+// newUserService 创建一个 service.IUserService 接口实例
+func newUserService() *userService {
 	return &userService{
 		dao: dao.UserDao,
 	}
-}
-
-// SingleUserService service.IUserService 接口单例模式
-func SingleUserService() (s *userService) {
-	once.Do(func() {
-		s = NewUserService()
-	})
-	return
 }
 
 func (s *userService) Register(registerUser model.RegisterUser) error {
@@ -48,7 +48,7 @@ func (s *userService) Register(registerUser model.RegisterUser) error {
 	}
 	// 查重
 	u, e := s.FindByUsername(user.Username)
-	if e != nil && !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFound){
+	if e != nil && !errors.Is(e, gorm.ErrRecordNotFound) && !errors.Is(e, code.RecordNotFoundErr){
 		return code.DBErr
 	}
 	if u.ID != 0 {

@@ -14,7 +14,7 @@ var (
 
 func init() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true&loc=Local",
-		conf.Config.Username, conf.Config.Password, conf.Config.Host, conf.Config.BaseName)
+		conf.Config.Username, conf.Config.Datasource.Password, conf.Config.Datasource.Host, conf.Config.Datasource.BaseName)
 	var err error
 	DB, err = gorm.Open(conf.Config.DriverName, dsn)
 	if err != nil {

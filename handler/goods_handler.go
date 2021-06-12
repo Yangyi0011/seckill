@@ -1,4 +1,4 @@
-package goods
+package handler
 
 import (
 	"github.com/gin-gonic/gin"
@@ -10,11 +10,6 @@ import (
 	"seckill/model"
 	"seckill/service"
 	"strconv"
-	"sync"
-)
-
-var (
-	once sync.Once
 )
 
 type GoodsHandler struct {
@@ -26,14 +21,6 @@ func NewGoodsHandler() *GoodsHandler {
 	return &GoodsHandler{
 		goodsService: service.GoodsService,
 	}
-}
-
-// SingleUserHandler UserHandler 单例模式
-func SingleUserHandler() (h *GoodsHandler) {
-	once.Do(func() {
-		h = NewGoodsHandler()
-	})
-	return
 }
 
 // QueryGoodsVOByID go doc

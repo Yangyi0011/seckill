@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,11 +6,6 @@ import (
 	"seckill/infra/utils/response"
 	"seckill/model"
 	"seckill/service"
-	"sync"
-)
-
-var (
-	once sync.Once
 )
 
 type UserHandler struct {
@@ -22,14 +17,6 @@ func NewUserHandler() *UserHandler {
 	return &UserHandler{
 		userService: service.UserService,
 	}
-}
-
-// SingleUserHandler UserHandler 单例模式
-func SingleUserHandler() (h *UserHandler) {
-	once.Do(func() {
-		h = NewUserHandler()
-	})
-	return
 }
 
 // Register go doc

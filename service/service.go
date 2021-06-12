@@ -1,23 +1,8 @@
 package service
 
-import (
-	"log"
-	"seckill/service/goods"
-	"seckill/service/user"
-)
-
+// service 层所有接口的实例化变量
 var (
-	UserService IUserService
 	GoodsService IGoodsService
+	UserService IUserService
+	OrderService IOrderService
 )
-
-func init() {
-	UserService = user.SingleUserService()
-	if UserService == nil {
-		log.Fatalln("Err: UserService is not find")
-	}
-	GoodsService = goods.SingleGoodsService()
-	if UserService == nil {
-		log.Fatalln("Err: GoodsService is not find")
-	}
-}

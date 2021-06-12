@@ -11,11 +11,11 @@ var (
 	GoodsDao IGoodsDao
 )
 func init() {
-	UserDao = user.SingleUserDao()
+	UserDao = user.NewUserDao()
 	if UserDao == nil {
 		log.Fatalln("Err: UserDao is not find")
 	}
-	GoodsDao = goods.SingleGoodsDao()
+	GoodsDao = goods.NewGoodsDao()
 	if UserDao == nil {
 		log.Fatalln("Err: GoodsDao is not find")
 	}
