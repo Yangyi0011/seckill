@@ -6,12 +6,7 @@ import (
 	"seckill/infra/code"
 	"seckill/infra/db"
 	"seckill/model"
-	"sync"
 	"time"
-)
-
-var (
-	once sync.Once
 )
 
 type userDao struct {
@@ -21,14 +16,6 @@ type userDao struct {
 // NewUserDao 创建一个 IUserDao 接口的实例
 func NewUserDao () *userDao {
 	return &userDao{db: db.DB}
-}
-
-// SingleUserDao IUserDao 接口单例模式
-func SingleUserDao() (d *userDao) {
-	once.Do(func() {
-		d = NewUserDao()
-	})
-	return
 }
 
 // Insert 添加用户
@@ -45,7 +32,7 @@ func (d *userDao) QueryByUsername(username string) (model.User, error) {
 	var user model.User
 	if e := db.DB.Debug().Where("username = ?", username).Take(&user).Error; e != nil {
 		if errors.Is(e, gorm.ErrRecordNotFound) {
-			return user, code.RecordNotFound
+			return user, code.RecordNotFoundErr
 		}
 		return user, code.DBErr
 	}

@@ -3,6 +3,10 @@ package service
 import "seckill/model"
 
 type IGoodsService interface {
+
+	// Check 商品信息检查
+	Check(g model.Goods) error
+
 	// FindGoodsByID 通过 id 查询一条模型数据
 	FindGoodsByID(id int) (model.Goods, error)
 
@@ -26,4 +30,13 @@ type IGoodsService interface {
 
 	// DeleteWithLogic 逻辑删除数据
 	DeleteWithLogic(id int) error
+
+	// SetGoodsStock 设置商品库存缓存
+	SetGoodsStock(goodsId int, stock int) (err error)
+
+	// DecrStock 商品库存缓存原子 -1，并返回减少后的当前库存
+	DecrStock(goodsId int) (stock int, err error)
+
+	// IncrStock 商品库存缓存原子 +1，并返回添加后的当前库存
+	IncrStock(goodsId int) (err error)
 }

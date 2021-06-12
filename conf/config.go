@@ -26,6 +26,7 @@ type AppConfig struct {
 // App 系统配置信息
 type App struct {
 	Datasource `yaml:"datasource"`
+	Redis `yaml:"redis"`
 }
 
 // Datasource 数据源配置信息
@@ -34,6 +35,12 @@ type Datasource struct {
 	Host string `yaml:"host"`
 	BaseName string `yaml:"baseName"`
 	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+}
+
+// Redis redis 配置信息
+type Redis struct {
+	Host     string `yaml:"host"`
 	Password string `yaml:"password"`
 }
 

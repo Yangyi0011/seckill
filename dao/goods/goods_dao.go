@@ -7,11 +7,6 @@ import (
 	"seckill/infra/code"
 	"seckill/infra/db"
 	"seckill/model"
-	"sync"
-)
-
-var (
-	once sync.Once
 )
 
 type goodsDao struct {
@@ -21,14 +16,6 @@ type goodsDao struct {
 // NewGoodsDao 创建一个 GoodsDao 接口的实例
 func NewGoodsDao() *goodsDao {
 	return &goodsDao{db: db.DB}
-}
-
-// SingleGoodsDao IUserDao 接口单例模式
-func SingleGoodsDao() (d *goodsDao) {
-	once.Do(func() {
-		d = NewGoodsDao()
-	})
-	return
 }
 
 func (d *goodsDao) QueryGoodsByID(id int) (g model.Goods, e error) {
@@ -67,13 +54,13 @@ func (d *goodsDao) Delete(id int) error {
 	g.ID = uint(id)
 	if e := db.DB.Debug().Take(&g).Error; e != nil {
 		if errors.Is(e, gorm.ErrRecordNotFound) {
-			return code.RecordNotFound
+			return code.RecordNotFoundErr
 		}
 		log.Println(e)
 		return e
 	}
 	if g.ID == 0 {
-		return code.RecordNotFound
+		return code.RecordNotFoundErr
 	}
 	if e := db.DB.Debug().Delete(&g).Error; e != nil {
 		log.Println(e)
