@@ -6,8 +6,10 @@ import (
 	"github.com/swaggo/files"       // swagger embed files
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 	"gopkg.in/go-playground/validator.v9"
+	"net/http"
 	"reflect"
 	"seckill/handler"
+	"seckill/infra/utils/response"
 	"seckill/middleware"
 	"seckill/model"
 	"seckill/service/goods"
@@ -88,6 +90,19 @@ func swaggerRouter() {
 }
 
 func customRouter() {
+	indexGroup := myRouter.Group("/")
+	{
+		indexGroup.Any("", func(ctx *gin.Context) {
+			result := model.Result{
+				Code:    http.StatusOK,
+				Message: "index 空空如也~",
+				Data:    nil,
+			}
+			response.Success(ctx, result)
+			return
+		})
+	}
+
 	api := myRouter.Group("/api")
 	{
 		userGroup := api.Group("/user")
@@ -95,13 +110,6 @@ func customRouter() {
 			userGroup.POST("/register", userHandler.Register)
 			userGroup.POST("/login", userHandler.Login)
 			userGroup.POST("/logout", userHandler.Logout)
-		}
-
-		testGroup := api.Group("/test")
-		// 对组内的所有请求都做认证
-		testGroup.Use(middleware.Auth())
-		{
-			testGroup.Any("")
 		}
 
 		goodsGroup := api.Group("/goods")
@@ -114,7 +122,7 @@ func customRouter() {
 
 		seckill := api.Group("/seckill")
 		{
-			seckill.POST("/", orderHandler.SecondKill)
+			seckill.POST("/", middleware.Auth(), orderHandler.SecondKill)
 		}
 	}
 }
