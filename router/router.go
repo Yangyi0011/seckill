@@ -12,6 +12,7 @@ import (
 	"seckill/infra/utils/response"
 	"seckill/middleware"
 	"seckill/model"
+	"seckill/mq"
 	"seckill/service/goods"
 	"seckill/service/order"
 	"seckill/service/user"
@@ -51,16 +52,20 @@ func ValidateJSONDateType(field reflect.Value) interface{} {
 	return nil
 }
 
+// InitRouter 初始化路由器
 func InitRouter() * gin.Engine{
 	initService()
 	initHandler()
 	swaggerRouter()
 	customRouter()
+
+	mq.Run()
 	return myRouter
 }
 
 // 初始化 service 层
 func initService() {
+	defer mq.Init()
 	goods.InitService()
 	order.InitService()
 	user.InitService()
@@ -115,9 +120,11 @@ func customRouter() {
 		goodsGroup := api.Group("/goods")
 		{
 			goodsGroup.GET("/:id", goodsHandler.QueryGoodsVOByID)
+			goodsGroup.POST("/list", goodsHandler.QueryGoodsVOByCondition)
 			goodsGroup.POST("/", middleware.Auth(), middleware.SellerAuth(), goodsHandler.Insert)
 			goodsGroup.PUT("/", middleware.Auth(), middleware.SellerAuth(), goodsHandler.Update)
 			goodsGroup.DELETE("/:id", middleware.Auth(), middleware.SellerAuth(), goodsHandler.Delete)
+			goodsGroup.POST("/seckillInit", middleware.Auth(), middleware.SellerAuth(), goodsHandler.SecondKillGoodsInit)
 		}
 
 		seckill := api.Group("/seckill")
