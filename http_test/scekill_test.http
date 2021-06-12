@@ -1,0 +1,9 @@
+POST http://localhost:8080/api/seckill
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjM0OTMwMzIsImp0aSI6IjIiLCJpYXQiOjE2MjM0ODk0MzIsImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzNDg5NDMyLCJzdWIiOiJhdXRoIn0.8QMR8pcjKsAO3gyz98ivw3hwHJlISAjGJE7ofQTQbl0
+
+{
+  "goodsId": 1
+}
+
+###

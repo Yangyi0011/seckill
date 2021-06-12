@@ -1,12 +1,15 @@
+
+### 注册用户
 POST http://localhost:8080/api/user/register
 Content-Type: application/json
 
 {
   "password": "123",
+  "kind": 0,
   "username": "tom"
 }
 
-###
+### 用户登录
 POST http://localhost:8080/api/user/login
 Content-Type: application/json
 
@@ -15,14 +18,14 @@ Content-Type: application/json
   "username": "tom"
 }
 
-###
+### 用户退出
 POST http://localhost:8080/api/user/logout
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbSIsInBhc3N3b3JkIjoiMTIzIiwia2luZCI6MCwiYXVkIjoidG9tIiwiZXhwIjoxNjIzMzI1NDg5LCJqdGkiOiIxIiwiaWF0IjoxNjIzMzIzNjg5LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzMyMzY4OSwic3ViIjoiYXV0aCJ9.IDe7dgWM94lPlrcpO5ZOue4-wMpInKIbuXWrQZD-uBU
 
-###
+### 用户认证测试
 GET http://localhost:8080/api/test
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbSIsInBhc3N3b3JkIjoiMTIzIiwia2luZCI6MCwiYXVkIjoidG9tIiwiZXhwIjoxNjIzMzI1NDg5LCJqdGkiOiIxIiwiaWF0IjoxNjIzMzIzNjg5LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzMyMzY4OSwic3ViIjoiYXV0aCJ9.IDe7dgWM94lPlrcpO5ZOue4-wMpInKIbuXWrQZD-uBU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjM0OTA5MzQsImp0aSI6IjIiLCJpYXQiOjE2MjM0ODczMzQsImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzNDg3MzM0LCJzdWIiOiJhdXRoIn0.5YyMvROE15A8QwrLw6tg7qmaMBcN23zi47eYig8d2TI
 
 ###

@@ -5,10 +5,6 @@ definitions:
         default: 0
         minimum: 1
         type: integer
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
       endTime:
         type: string
       id:
@@ -31,8 +27,6 @@ definitions:
         default: 0
         minimum: 0
         type: integer
-      updatedAt:
-        type: string
     required:
     - amount
     - endTime
@@ -105,6 +99,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
         "500":
           description: Internal Server Error
           schema:
@@ -112,7 +114,80 @@ paths:
       summary: 添加商品
       tags:
       - 商品管理
+    put:
+      consumes:
+      - application/json
+      description: 更新秒杀商品信息
+      parameters:
+      - description: 秒杀商品传输信息
+        in: body
+        name: goods
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoodsDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 更新商品
+      tags:
+      - 商品管理
   /api/goods/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 通过 id 删除商品信息
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 删除商品
+      tags:
+      - 商品管理
     get:
       consumes:
       - application/json
@@ -141,6 +216,44 @@ paths:
       summary: 查询商品
       tags:
       - 商品管理
+  /api/seckill:
+    post:
+      consumes:
+      - application/json
+      description: 对商品进行秒杀
+      parameters:
+      - description: 秒杀商品传输信息
+        in: body
+        name: goods
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoodsDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 秒杀
+      tags:
+      - 商品秒杀
   /api/user/login:
     post:
       consumes:

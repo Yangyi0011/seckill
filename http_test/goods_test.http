@@ -1,16 +1,40 @@
+DELETE http://localhost:8080/api/goods/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDIwNDE3LCJqdGkiOiIyIiwiaWF0IjoxNjIzNDE4NjE3LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQxODYxNywic3ViIjoiYXV0aCJ9.9utFY8YJc5ye30DpBKAA6uyJ1MPMs9jchg-xJ8GXy0M
+
+###
+### 更新商品信息
+PUT http://localhost:8080/api/goods
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDkxMDEwLCJqdGkiOiIxIiwiaWF0IjoxNjIzNDg3NDEwLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQ4NzQxMCwic3ViIjoiYXV0aCJ9.B3Y81LgV0WcJdGDn5-jkUwRoa63cWRIxwSFdewurQxk
+
+{
+  "amount": 100,
+  "endTime": "2021-06-20 00:00:00",
+  "id": 1,
+  "img": "",
+  "name": "秒杀商品-2",
+  "originPrice": 10,
+  "price": 5.5,
+  "startTime": "2021-06-18 00:00:00",
+  "stock": 99
+}
+
+###
 ### 通过 id 查询商品
-GET http://localhost:8080/api/goods/1
+GET http://localhost:8080/api/goods/2
 Accept: application/json
 
 ### 添加秒杀商品
 POST http://localhost:8080/api/goods
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjMzMzMyNDMsImp0aSI6IjEiLCJpYXQiOjE2MjMzMzE0NDMsImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzMzMxNDQzLCJzdWIiOiJhdXRoIn0.DiqmjtliOJHbP5qYZIKI3fQXYLPwWsDB5BBlIRlXBMo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDkxMDEwLCJqdGkiOiIxIiwiaWF0IjoxNjIzNDg3NDEwLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQ4NzQxMCwic3ViIjoiYXV0aCJ9.B3Y81LgV0WcJdGDn5-jkUwRoa63cWRIxwSFdewurQxk
 
 {
   "amount": 100,
-  "name": "测试商品-1",
+  "name": "测试商品-2",
   "originPrice": 10,
+  "endTime": "2021-06-20 00:00:00",
   "price": 1.5,
   "startTime": "2021-06-18 00:00:00",
   "stock": 100
