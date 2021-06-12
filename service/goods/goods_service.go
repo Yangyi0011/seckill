@@ -58,8 +58,8 @@ func newGoodsService() *goodsService {
 
 func (s *goodsService) Check(g model.Goods) (e error) {
 	now := time.Now().Unix()
-	startTime := time.Time(g.StartTime).Unix()
-	endTime := time.Time(g.EndTime).Unix()
+	startTime := g.StartTime.Unix()
+	endTime := g.EndTime.Unix()
 	if now < startTime {
 		// 秒杀活动未开始
 		e = code.SeckillNotStart
@@ -148,8 +148,8 @@ func (s *goodsService) ToVO(g model.Goods) (vo model.GoodsVO, e error) {
 	if e = bean.SimpleCopyProperties(&vo, g); e != nil {
 		return vo, code.ConvertErr
 	}
-	startTime := time.Time(g.StartTime).Unix()
-	endTime := time.Time(g.EndTime).Unix()
+	startTime := g.StartTime.Unix()
+	endTime := g.EndTime.Unix()
 	now := time.Now().Unix()
 	if now < startTime {
 		// 当前时间 < 商品秒杀的开始时间，说明秒杀活动未开始，需要计算倒计时
