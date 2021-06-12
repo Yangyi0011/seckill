@@ -49,6 +49,13 @@ func (t LocalTime) String() string {
 }
 
 func (t LocalTime) ZeroValue() LocalTime {
-	zero, _ := time.Parse("2006-01-02 15:04:05 +0800 CST", "0001-01-01 00:00:00")
+	zero, _ := time.Parse(TimeFormat, "0001-01-01 00:00:00")
 	return LocalTime(zero)
+}
+
+// Unix 转为 time.Time.Unix()
+// 如果 LocalTime 是直接从数据库查出来的，此时 LocalTime 相对于 time.Time 是 +8个小时的，
+// 不能直接使用 time.Time(t).Unix()，需要做一下处理
+func (t LocalTime) Unix() int64 {
+	return time.Time(t).Add(-8*time.Hour).Unix()
 }
