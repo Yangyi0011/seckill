@@ -1,0 +1,25 @@
+
+### 通过条件查询订单列表
+POST http://localhost:8080/api/order/list
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjM1ODA2NTksImp0aSI6IjIiLCJpYXQiOjE2MjM1NzcwNTksImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzNTc3MDU5LCJzdWIiOiJhdXRoIn0.kRmASZBgfD54VwXPmP2BnZqMpDtY26MMm4WMACSu1nA
+
+{
+  "goodsId": 0,
+  "goodsName": "",
+  "goodsPrice": 9.9,
+  "id": 0,
+  "index": 1,
+  "orderId": "",
+  "paymentId": 0,
+  "size": 10,
+  "status": 0,
+  "userId": 0
+}
+
+### 通过订单编号获取订单信息
+GET http://localhost:8080/api/order/20210613015353352237
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjM1ODA2NTksImp0aSI6IjIiLCJpYXQiOjE2MjM1NzcwNTksImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzNTc3MDU5LCJzdWIiOiJhdXRoIn0.kRmASZBgfD54VwXPmP2BnZqMpDtY26MMm4WMACSu1nA
+
+###
