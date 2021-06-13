@@ -54,6 +54,7 @@ func ValidateJSONDateType(field reflect.Value) interface{} {
 
 // InitRouter 初始化路由器
 func InitRouter() * gin.Engine{
+	myRouter.Use(middleware.Cors())
 	initService()
 	initHandler()
 	swaggerRouter()
