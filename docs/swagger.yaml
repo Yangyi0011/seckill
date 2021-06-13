@@ -35,6 +35,25 @@ definitions:
     - startTime
     - stock
     type: object
+  model.GoodsQueryCondition:
+    properties:
+      endTime:
+        type: string
+      id:
+        type: integer
+      index:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      size:
+        type: integer
+      startTime:
+        type: string
+      stock:
+        type: integer
+    type: object
   model.LoginUser:
     properties:
       password:
@@ -46,6 +65,29 @@ definitions:
     required:
     - password
     - username
+    type: object
+  model.OrderInfoQueryCondition:
+    properties:
+      goodsId:
+        type: integer
+      goodsName:
+        type: string
+      goodsPrice:
+        type: number
+      id:
+        type: integer
+      index:
+        type: integer
+      orderId:
+        type: string
+      paymentId:
+        type: integer
+      size:
+        type: integer
+      status:
+        type: integer
+      userId:
+        type: integer
     type: object
   model.RegisterUser:
     properties:
@@ -216,6 +258,134 @@ paths:
       summary: 查询商品
       tags:
       - 商品管理
+  /api/goods/list:
+    post:
+      consumes:
+      - application/json
+      description: 通过 条件 查询秒杀商品
+      parameters:
+      - description: 商品信息条件
+        in: body
+        name: condition
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoodsQueryCondition'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 查询商品
+      tags:
+      - 商品管理
+  /api/goods/seckillInit:
+    post:
+      consumes:
+      - application/json
+      description: 初始化当前商家的秒杀商品去参与秒杀活动
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 初始化秒杀商品
+      tags:
+      - 商品管理
+  /api/order/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过 id 查询订单数据
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 查询订单
+      tags:
+      - 订单管理
+  /api/order/list:
+    post:
+      consumes:
+      - application/json
+      description: 通过查询条件查询订单列表数据
+      parameters:
+      - description: 订单查询条件
+        in: body
+        name: condition
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderInfoQueryCondition'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 查询订单列表
+      tags:
+      - 订单管理
   /api/seckill:
     post:
       consumes:
@@ -252,6 +422,43 @@ paths:
           schema:
             $ref: '#/definitions/model.Result'
       summary: 秒杀
+      tags:
+      - 商品秒杀
+  /api/seckill/{goodsId}:
+    get:
+      consumes:
+      - application/json
+      description: 通过商品id查询对该商品的秒杀结果
+      parameters:
+      - description: goodsId
+        in: path
+        name: goodsId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Result'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Result'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Result'
+      summary: 查询秒杀结果
       tags:
       - 商品秒杀
   /api/user/login:
