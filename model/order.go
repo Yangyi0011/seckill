@@ -2,7 +2,9 @@ package model
 
 import (
 	"log"
+	"seckill/conf"
 	"seckill/infra/db"
+	"time"
 )
 
 const (
@@ -13,7 +15,7 @@ const (
 	// Paying 订单支付中
 	Paying int8 = 1
 	// Paid 订单已支付
-	Paid   int8 = 2
+	Paid int8 = 2
 )
 
 // Order 订单
@@ -40,37 +42,57 @@ type OrderInfo struct {
 // OrderInfoVO 订单信息视图模型
 type OrderInfoVO struct {
 	Model
-	OrderId    string `json:"orderId"`
-	GoodsId    uint   `json:"goodsId"`
-	GoodsName  string `json:"goodsName"`
-	GoodsImg   string `json:"goodsImg"`
-	GoodsPrice float64  `json:"goodsPrice"`
-	Status     int8   `json:"status"`
-	Duration   int64  `json:"duration"`
-	Timeout    int64  `json:"timeout"`
+	OrderId    string  `json:"orderId"`
+	GoodsId    uint    `json:"goodsId"`
+	GoodsName  string  `json:"goodsName"`
+	GoodsImg   string  `json:"goodsImg"`
+	GoodsPrice float64 `json:"goodsPrice"`
+	Status     int8    `json:"status"`
+	Duration   int64   `json:"duration"`
+	Timeout    int64   `json:"timeout"`
 }
 
 // OrderInfoQueryCondition 商品查询条件
 type OrderInfoQueryCondition struct {
 	Model
+	PageDTO
 	OrderId    string  `json:"orderId"`
 	UserId     uint    `json:"userId"`
 	GoodsId    uint    `json:"goodsId"`
 	GoodsName  string  `json:"goodsName"`
-	GoodsImg   string  `json:"goodsImg"`
 	GoodsPrice float64 `json:"goodsPrice"`
 	PaymentId  int     `json:"paymentId"`
 	Status     int8    `json:"status"`
 }
 
 // TableName 继承接口指定表名
-func (g Order) TableName() string {
+func (order Order) TableName() string {
 	return "orders"
 }
 
 // TableName 继承接口指定表名
-func (g OrderInfo) TableName() string {
+func (orderInfo OrderInfo) TableName() string {
 	return "order_info"
+}
+
+// ToVO 把 OrderInfo 转为 OrderInfoVO
+func (orderInfo OrderInfo) ToVO() OrderInfoVO {
+	expiration := conf.Config.Order.Expiration
+	orderVO := OrderInfoVO{
+		Model: orderInfo.Model,
+		OrderId:    orderInfo.OrderId,
+		GoodsId:    orderInfo.GoodsId,
+		GoodsName:  orderInfo.GoodsName,
+		GoodsImg:   orderInfo.GoodsImg,
+		GoodsPrice: orderInfo.GoodsPrice,
+		Status:     orderInfo.Status,
+		Duration:   0,
+		Timeout:    expiration,
+	}
+	if orderVO.Status == 0 {
+		orderVO.Duration = orderInfo.CreatedAt.Unix() + expiration - time.Now().Unix()
+	}
+	return orderVO
 }
 
 func init() {

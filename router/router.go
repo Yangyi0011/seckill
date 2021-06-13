@@ -131,5 +131,11 @@ func customRouter() {
 		{
 			seckill.POST("/", middleware.Auth(), orderHandler.SecondKill)
 		}
+
+		orderGroup := api.Group("/order")
+		{
+			orderGroup.GET("/:id", middleware.Auth(), orderHandler.QueryByID)
+			orderGroup.POST("/list", middleware.Auth(), orderHandler.QueryByCondition)
+		}
 	}
 }

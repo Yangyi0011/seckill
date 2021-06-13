@@ -2,6 +2,7 @@ package order
 
 import (
 	"errors"
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"log"
 	"seckill/infra/code"
@@ -27,8 +28,46 @@ func (d *orderDao) QueryOrderInfoByOrderId(id string) (o model.OrderInfo, e erro
 	return
 }
 
-func (d *orderDao) QueryByCondition(c model.OrderInfoQueryCondition) ([]model.OrderInfo, error) {
-	return nil, nil
+func (d *orderDao) QueryByCondition(c model.OrderInfoQueryCondition) (list []model.OrderInfo, e error) {
+	sql := c.Model.GetWhereSql()
+	if c.OrderId != "" {
+		sql.WriteString("and order_id = ")
+		sql.WriteString("'")
+		sql.WriteString(c.OrderId)
+		sql.WriteString("' ")
+	}
+	if c.UserId != 0 {
+		sql.WriteString("and user_id = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.UserId))
+	}
+	if c.GoodsId != 0 {
+		sql.WriteString("and goods_id = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.GoodsId))
+	}
+	if c.GoodsName != "" {
+		sql.WriteString("and goods_name like ")
+		sql.WriteString("'%")
+		sql.WriteString(c.GoodsName)
+		sql.WriteString("%' ")
+	}
+	if c.GoodsPrice != 0.0 {
+		sql.WriteString("and goods_price = ")
+		sql.WriteString(fmt.Sprintf("%f ", c.GoodsPrice))
+	}
+	if c.PaymentId != 0 {
+		sql.WriteString("and payment_id = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.PaymentId))
+	}
+	if c.Status != 0 {
+		sql.WriteString("and status = ")
+		sql.WriteString(fmt.Sprintf("%d ", c.Status))
+	}
+	if e = d.db.Debug().Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
+		log.Println(e)
+		e = code.DBErr
+		return
+	}
+	return
 }
 
 func (d *orderDao) Insert(o model.OrderInfo) (e error) {

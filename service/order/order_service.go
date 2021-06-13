@@ -148,6 +148,32 @@ func (s *orderService) GetOrderInfo(orderId string) (o model.OrderInfo, e error)
 	return
 }
 
+func (s *orderService) GetOrderInfoVO(orderId string, userId int) (vo model.OrderInfoVO, e error) {
+	var orderInfo model.OrderInfo
+	if orderInfo, e = s.GetOrderInfo(orderId); e != nil {
+		return
+	}
+	if orderInfo.UserId != uint(userId) {
+		e = code.OrderNotFoundErr
+		return
+	}
+	vo = orderInfo.ToVO()
+	return
+}
+
+func (s *orderService) GetOrderInfoVOList(c model.OrderInfoQueryCondition) (list []model.OrderInfoVO, e error) {
+	var orderInfoList []model.OrderInfo
+	if orderInfoList, e = s.dao.QueryByCondition(c); e != nil {
+		e = code.DBErr
+		return
+	}
+	list = make([]model.OrderInfoVO, len(orderInfoList))
+	for i, v := range orderInfoList {
+		list[i] = v.ToVO()
+	}
+	return
+}
+
 func (s *orderService) CloseOrder(userId int, orderId string) (e error) {
 	var orderInfo model.OrderInfo
 	if orderInfo, e = s.GetOrderInfo(orderId); e != nil {
@@ -211,6 +237,7 @@ func (s *orderService) GetOrderId(userId, goodsId int) (orderId string, err erro
 	return
 }
 
+// 创建订单信息
 func (s *orderService)newOrderInfo(userId int, goods model.Goods) model.OrderInfo {
 	orderInfo := model.OrderInfo{
 		OrderId:    createOrderId(),
@@ -229,6 +256,7 @@ func createOrderId() string {
 	return time.Now().Format("20060102150405") + key.CreateKey(key.Number, 6)
 }
 
+// 尝试获取锁
 func (s *orderService) tryLock(userId, goodsId int, lockId int64) (err error) {
 	var res bool
 	k := fmt.Sprintf(LockKey, userId, goodsId)
@@ -243,6 +271,7 @@ func (s *orderService) tryLock(userId, goodsId int, lockId int64) (err error) {
 	return
 }
 
+// UnLock 释放锁
 func (s *orderService) UnLock(userId, goodsId int) (err error) {
 	k := fmt.Sprintf(LockKey, userId, goodsId)
 	if err = s.redis.Del(ctx, k).Err(); err != nil {
