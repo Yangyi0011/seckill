@@ -1,7 +1,6 @@
 package goods
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"github.com/jinzhu/gorm"
@@ -30,30 +29,7 @@ func (d *goodsDao) QueryGoodsByID(id int) (g model.Goods, e error) {
 
 func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.Goods, e error) {
 	timeZero := model.LocalTime{}.ZeroValue()
-	var sql bytes.Buffer
-	sql.WriteString("1 = 1 ")
-	if c.ID != 0 {
-		sql.WriteString("and id = ")
-		sql.WriteString(fmt.Sprintf("%d ", c.ID))
-	}
-	if c.CreatedAt != timeZero {
-		sql.WriteString("and create_at = ")
-		sql.WriteString("'")
-		sql.WriteString(c.CreatedAt.String())
-		sql.WriteString("' ")
-	}
-	if c.UpdatedAt != timeZero {
-		sql.WriteString("and update_at = ")
-		sql.WriteString("'")
-		sql.WriteString(c.UpdatedAt.String())
-		sql.WriteString("' ")
-	}
-	if c.DeletedAt != nil && (*c.DeletedAt) != timeZero {
-		sql.WriteString("and delete_at = ")
-		sql.WriteString("'")
-		sql.WriteString(c.DeletedAt.String())
-		sql.WriteString("' ")
-	}
+	sql := c.Model.GetWhereSql()
 	if c.Name != "" {
 		sql.WriteString("and name like ")
 		sql.WriteString("'%")
@@ -84,16 +60,7 @@ func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.G
 		sql.WriteString(c.EndTime.String())
 		sql.WriteString("' ")
 	}
-	offset := 0
-	if c.Index != 0 {
-		offset = (c.Index-1)*c.Size
-	}
-	// 默认每页 10 条数据
-	limit := 10
-	if c.Size != 0 {
-		limit = c.Size
-	}
-	if e = d.db.Debug().Limit(limit).Offset(offset).Find(&list, sql.String()).Error; e != nil {
+	if e = d.db.Debug().Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
 		log.Println(e)
 		e = code.DBErr
 		return
