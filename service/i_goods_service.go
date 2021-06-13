@@ -13,9 +13,6 @@ type IGoodsService interface {
 	// FindGoodsVOByID 通过 id 查询一条视图数据
 	FindGoodsVOByID(id int) (model.GoodsVO, error)
 
-	// ToVO 把 Goods 转为 GoodsVO
-	ToVO(g model.Goods) (model.GoodsVO, error)
-
 	// FindByCondition 通过条件查询多条数据
 	FindByCondition(c model.GoodsQueryCondition) ([]model.GoodsVO, error)
 

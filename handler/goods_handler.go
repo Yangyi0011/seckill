@@ -30,7 +30,7 @@ func NewGoodsHandler() *GoodsHandler {
 // @version 1.0
 // @Accept json
 // @Produce  json
-// @Param id path int true "id" "秒杀商品信息"
+// @Param id path int true "id" "商品id"
 // @Success 200 object model.Result model.GoodsVO 成功后返回值
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 500 object model.Result 操作失败
@@ -84,7 +84,9 @@ func (h *GoodsHandler) QueryGoodsVOByCondition(ctx *gin.Context) {
 	}
 	// 默认查询当前登录人的数据
 	claims, _ := request.GetCurrentCustomClaims(ctx)
-	condition.UserId = claims.UserId
+	if claims != nil {
+		condition.UserId = claims.UserId
+	}
 	if list, e = h.goodsService.FindByCondition(condition); e != nil {
 		result.Code = http.StatusInternalServerError
 		result.Message = e.Error()
@@ -238,7 +240,7 @@ func (h *GoodsHandler) Update(ctx *gin.Context) {
 // @version 1.0
 // @Accept json
 // @Produce  json
-// @Param id path int true "id" "秒杀商品信息"
+// @Param id path int true "id" "商品id"
 // @Success 200 object model.Result 成功后返回值
 // @Failure 400 object model.Result 请求参数有误
 // @Failure 401 object model.Result 需要登录

@@ -1,8 +1,32 @@
-DELETE http://localhost:8080/api/goods/2
+### 通过条件查询商品列表
+POST http://localhost:8080/api/goods/list
+Content-Type: application/json
+
+{
+  "endTime": "",
+  "id": 0,
+  "index": 1,
+  "name": "",
+  "price": 0,
+  "size": 10,
+  "startTime": "",
+  "stock": 0
+}
+
+###
+
+### 初始化秒杀商品
+POST http://localhost:8080/api/goods/seckillInit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNTIzNzYzLCJqdGkiOiIxIiwiaWF0IjoxNjIzNTIwMTYzLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzUyMDE2Mywic3ViIjoiYXV0aCJ9.EYbn3WeIplcAkd39YLKjb2SLXbw7MbvScxqbO6mSVGI
+
+{}
+
+### 删除商品
+DELETE http://localhost:8080/api/goods/3
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDIwNDE3LCJqdGkiOiIyIiwiaWF0IjoxNjIzNDE4NjE3LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQxODYxNywic3ViIjoiYXV0aCJ9.9utFY8YJc5ye30DpBKAA6uyJ1MPMs9jchg-xJ8GXy0M
 
-###
 ### 更新商品信息
 PUT http://localhost:8080/api/goods
 Content-Type: application/json
@@ -20,7 +44,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZ
   "stock": 99
 }
 
-###
 ### 通过 id 查询商品
 GET http://localhost:8080/api/goods/2
 Accept: application/json
@@ -28,16 +51,16 @@ Accept: application/json
 ### 添加秒杀商品
 POST http://localhost:8080/api/goods
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDkxMDEwLCJqdGkiOiIxIiwiaWF0IjoxNjIzNDg3NDEwLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQ4NzQxMCwic3ViIjoiYXV0aCJ9.B3Y81LgV0WcJdGDn5-jkUwRoa63cWRIxwSFdewurQxk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNTIzNzYzLCJqdGkiOiIxIiwiaWF0IjoxNjIzNTIwMTYzLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzUyMDE2Mywic3ViIjoiYXV0aCJ9.EYbn3WeIplcAkd39YLKjb2SLXbw7MbvScxqbO6mSVGI
 
 {
-  "amount": 100,
-  "name": "测试商品-2",
-  "originPrice": 10,
+  "amount": 10,
+  "name": "测试商品-3",
+  "originPrice": 10000,
   "endTime": "2021-06-20 00:00:00",
-  "price": 1.5,
+  "price": 99,
   "startTime": "2021-06-18 00:00:00",
-  "stock": 100
+  "stock": 10
 }
 
 ###

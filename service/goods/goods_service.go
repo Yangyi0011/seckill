@@ -23,13 +23,7 @@ var (
 	ctx  = context.Background()
 )
 
-// 商品常量
 const (
-	Ended      int8 = -1 // 已结束
-	NotStarted int8 = 0  // 未开始
-	OnGoing    int8 = 1  // 进行中
-	SoldOut    int8 = 2  // 已售罄
-
 	CacheKey      = "goods:%d"       // 商品缓存key格式
 	CacheExpire   = 12 * time.Hour   // 缓存过期时间
 	GoodsStockKey = "goods_stock:%d" // 商品库存key格式
@@ -144,39 +138,12 @@ func (s * goodsService) deleteGoodsCache(id int) (e error) {
 	return
 }
 
-func (s *goodsService) ToVO(g model.Goods) (vo model.GoodsVO, e error) {
-	if e = bean.SimpleCopyProperties(&vo, g); e != nil {
-		return vo, code.ConvertErr
-	}
-	startTime := g.StartTime.Unix()
-	endTime := g.EndTime.Unix()
-	now := time.Now().Unix()
-	if now < startTime {
-		// 当前时间 < 商品秒杀的开始时间，说明秒杀活动未开始，需要计算倒计时
-		vo.Status = NotStarted
-		vo.Duration = startTime - now
-	} else if now >= startTime && now <= endTime {
-		// 秒杀开始时间 <= 当前时间 <= 秒杀结束时间，说明活动正在进行中
-		if vo.Stock > 0 {
-			// 如果商品还有库存，则活动正常进行
-			vo.Status = OnGoing
-		} else {
-			// 商品已售罄
-			vo.Status = SoldOut
-		}
-	} else {
-		// 该商品的秒杀活动已结束
-		vo.Status = Ended
-	}
-	return vo, nil
-}
-
 func (s *goodsService) FindGoodsVOByID(id int) (vo model.GoodsVO, e error) {
 	goods, err := s.FindGoodsByID(id)
 	if err != nil {
 		return vo, err
 	}
-	vo, e = s.ToVO(goods)
+	vo, e = goods.ToVO()
 	if e != nil {
 		return vo, e
 	}
@@ -192,7 +159,7 @@ func (s *goodsService) FindByCondition(c model.GoodsQueryCondition) ([]model.Goo
 	}
 	list := make([]model.GoodsVO, 0)
 	for _, v := range goodsList {
-		vo, err := s.ToVO(v)
+		vo, err := v.ToVO()
 		if err != nil {
 			return nil, err
 		}
