@@ -28,6 +28,7 @@ type App struct {
 	Datasource `yaml:"datasource"`
 	Redis `yaml:"redis"`
 	Order `yaml:"order"`
+	RateLimit `yaml:"rate_limit"`
 }
 
 // Datasource 数据源配置信息
@@ -48,6 +49,12 @@ type Redis struct {
 // Order 订单配置信息
 type Order struct {
 	Expiration int64 `yaml:"expiration"`
+}
+
+// RateLimit 限流配置信息
+type RateLimit struct {
+	Time  int64 `yaml:"time"`
+	Count int64 `yaml:"count"`
 }
 
 // 装载配置信息

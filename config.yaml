@@ -14,3 +14,9 @@ app:
   order:
     # 订单超时时间：秒
     expiration: 1800
+  # 限流配置信息，在多少秒内针对单个IP最多能有多少次请求
+  rate_limit:
+    # 时间段：秒
+    time: 60
+    # 请求次数
+    count: 120
