@@ -6,7 +6,10 @@ type IOrderService interface {
 	// SecondKill 秒杀
 	SecondKill(userId, goodsId int) (e error)
 
-	// GetOrderId 获取订单 id
+	// GetSecondKillResult 获取秒杀结果
+	GetSecondKillResult(userId, goodsId int) (res model.SecondKillResult, e error)
+
+	// GetOrderId 从订单编号缓存中获取订单编号
 	GetOrderId(userId, goodsId int) (orderId string, err error)
 
 	// GetOrderInfo 通过订单编号获取订单信息

@@ -13,4 +13,4 @@ app:
   # 订单配置信息
   order:
     # 订单超时时间：秒
-    expire: 1800
+    expiration: 1800

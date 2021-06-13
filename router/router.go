@@ -130,6 +130,7 @@ func customRouter() {
 		seckill := api.Group("/seckill")
 		{
 			seckill.POST("/", middleware.Auth(), orderHandler.SecondKill)
+			seckill.GET("/:goodsId", middleware.Auth(), orderHandler.GetSecondKillResult)
 		}
 
 		orderGroup := api.Group("/order")

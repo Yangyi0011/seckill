@@ -16,6 +16,11 @@ const (
 	Paying int8 = 1
 	// Paid 订单已支付
 	Paid int8 = 2
+
+	// SecondKilling 秒杀排队中
+	SecondKilling = 0
+	// SecondKillOk 秒杀成功
+	SecondKillOk = 1
 )
 
 // Order 订单
@@ -63,6 +68,14 @@ type OrderInfoQueryCondition struct {
 	GoodsPrice float64 `json:"goodsPrice"`
 	PaymentId  int     `json:"paymentId"`
 	Status     int8    `json:"status"`
+}
+
+// SecondKillResult 秒杀结果
+type SecondKillResult struct {
+	// 秒杀状态，0：排队中，1：成功，2：失败
+	Status  int8   `json:"status"`
+	// 订单编号
+	OrderId string `json:"orderId"`
 }
 
 // TableName 继承接口指定表名

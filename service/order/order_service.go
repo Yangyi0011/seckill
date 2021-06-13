@@ -102,6 +102,35 @@ func (s *orderService) SecondKill(userId, goodsId int) (e error) {
 	return
 }
 
+func (s *orderService) GetSecondKillResult(userId, goodsId int) (res model.SecondKillResult, e error) {
+	var (
+		orderId string
+		goods model.Goods
+	)
+	// 先验证商品是否处于秒杀活动中
+	goods, e = s.goodsService.FindGoodsByID(goodsId)
+	if e != nil {
+		return
+	}
+	if e = s.goodsService.Check(goods); e != nil {
+		return
+	}
+	// 在订单缓存中查询订单编号
+	if orderId, e = s.GetOrderId(userId, goodsId); e != nil {
+		e = code.RedisErr
+		return
+	}
+	if len(orderId) == 0 {
+		// 秒杀排队中
+		res.Status = model.SecondKilling
+	} else {
+		// 秒杀成功
+		res.Status = model.SecondKillOk
+		res.OrderId = orderId
+	}
+	return
+}
+
 func (s *orderService) CreateOrder(userId, goodsId int) (err error) {
 	var (
 		orderId string
@@ -224,6 +253,8 @@ func (s *orderService) DeleteOrderCache(order model.OrderInfo) (err error) {
 	return
 }
 
+// GetOrderId 从订单编号缓存中获取订单编号
+// 当用户秒杀成功时会创建一个商品订单放入缓存中
 func (s *orderService) GetOrderId(userId, goodsId int) (orderId string, err error) {
 	k := fmt.Sprintf(OrderIdKey, userId, goodsId)
 	if orderId, err = s.redis.Get(ctx, k).Result(); err != nil {
