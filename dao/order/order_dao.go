@@ -21,7 +21,7 @@ func NewOrderDao() *orderDao {
 }
 
 func (d *orderDao) QueryOrderInfoByOrderId(id string) (o model.OrderInfo, e error) {
-	if e = d.db.Debug().Where("order_id = ?", id).Take(&o).Error; e != nil {
+	if e = d.db.Where("order_id = ?", id).Take(&o).Error; e != nil {
 		log.Println(e)
 		return
 	}
@@ -62,7 +62,7 @@ func (d *orderDao) QueryByCondition(c model.OrderInfoQueryCondition) (list []mod
 		sql.WriteString("and status = ")
 		sql.WriteString(fmt.Sprintf("%d ", c.Status))
 	}
-	if e = d.db.Debug().Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
+	if e = d.db.Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
 		log.Println(e)
 		e = code.DBErr
 		return
@@ -71,14 +71,14 @@ func (d *orderDao) QueryByCondition(c model.OrderInfoQueryCondition) (list []mod
 }
 
 func (d *orderDao) Insert(o model.OrderInfo) (e error) {
-	if e = d.db.Debug().Create(&o).Error; e != nil {
+	if e = d.db.Create(&o).Error; e != nil {
 		return
 	}
 	return
 }
 
 func (d *orderDao) Update(o model.OrderInfo) (e error) {
-	if e = d.db.Debug().Model(&o).Updates(&o).Error; e != nil {
+	if e = d.db.Model(&o).Updates(&o).Error; e != nil {
 		return
 	}
 	return
@@ -93,7 +93,7 @@ func (d *orderDao) Delete(id string) (e error) {
 		e = code.RecordNotFoundErr
 		return
 	}
-	if e = d.db.Debug().Where("order_id = ?", id).Delete(&o).Error; e != nil {
+	if e = d.db.Where("order_id = ?", id).Delete(&o).Error; e != nil {
 		return
 	}
 	return
@@ -104,7 +104,7 @@ func (d *orderDao) CreateOrder(orderInfo model.OrderInfo) error {
 	err := d.db.Transaction(func(tx *gorm.DB) (e error) {
 		// 先减少商品库存
 		decrStockSql := "update goods set stock = stock - 1 where id = ? and stock > 0"
-		tx = tx.Debug().Exec(decrStockSql, orderInfo.GoodsId)
+		tx = tx.Exec(decrStockSql, orderInfo.GoodsId)
 		if e = tx.Error; e != nil {
 			log.Printf("tx.Exec() failed, err: %v, goodsId: %v", e, orderInfo.GoodsId)
 			return
@@ -164,7 +164,7 @@ func (d *orderDao) CloseOrder(orderInfo model.OrderInfo) error {
 		}
 
 		// 删除订单
-		if e = tx.Debug().Delete(model.Order{}, "order_id = ?", orderInfo.OrderId).Error; e != nil {
+		if e = tx.Delete(model.Order{}, "order_id = ?", orderInfo.OrderId).Error; e != nil {
 			log.Printf("tx.Delete() failed, err: %v", e)
 			return
 		}
@@ -175,7 +175,7 @@ func (d *orderDao) CloseOrder(orderInfo model.OrderInfo) error {
 		}
 
 		// 修改订单信息
-		if e = tx.Debug().Model(&orderInfo).Where("order_id = ? and status = ?", orderInfo.OrderId, orderInfo.Status).
+		if e = tx.Model(&orderInfo).Where("order_id = ? and status = ?", orderInfo.OrderId, orderInfo.Status).
 			Update("status = ?", model.Unpaid).Error; e != nil {
 			log.Printf("tx.Update() failed, err: %v", e)
 			return

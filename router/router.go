@@ -98,6 +98,7 @@ func swaggerRouter() {
 }
 
 func customRouter() {
+	// 首页
 	indexGroup := myRouter.Group("/")
 	{
 		indexGroup.Any("", func(ctx *gin.Context) {
@@ -110,7 +111,7 @@ func customRouter() {
 			return
 		})
 	}
-
+	// 业务接口
 	api := myRouter.Group("/api")
 	{
 		userGroup := api.Group("/user")

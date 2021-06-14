@@ -20,7 +20,7 @@ func NewGoodsDao() *goodsDao {
 }
 
 func (d *goodsDao) QueryGoodsByID(id int) (g model.Goods, e error) {
-	if e = db.DB.Debug().Where("id = ?", id).Take(&g).Error; e != nil {
+	if e = db.DB.Where("id = ?", id).Take(&g).Error; e != nil {
 		log.Println(e)
 		return
 	}
@@ -60,7 +60,7 @@ func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.G
 		sql.WriteString(c.EndTime.String())
 		sql.WriteString("' ")
 	}
-	if e = d.db.Debug().Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
+	if e = d.db.Limit(c.PageDTO.GetLimit()).Offset(c.PageDTO.GetOffset()).Find(&list, sql.String()).Error; e != nil {
 		log.Println(e)
 		e = code.DBErr
 		return
@@ -69,7 +69,7 @@ func (d *goodsDao) QueryByCondition(c model.GoodsQueryCondition) (list []model.G
 }
 
 func (d *goodsDao) Insert(g model.Goods) error {
-	if e := db.DB.Debug().Create(&g).Error; e != nil {
+	if e := db.DB.Create(&g).Error; e != nil {
 		log.Println(e)
 		return e
 	}
@@ -78,7 +78,7 @@ func (d *goodsDao) Insert(g model.Goods) error {
 
 // Update 更新数据
 func (d *goodsDao) Update(g model.Goods) error {
-	if e := db.DB.Debug().Model(&g).Updates(&g).Error; e != nil {
+	if e := db.DB.Model(&g).Updates(&g).Error; e != nil {
 		log.Println(e)
 		return e
 	}
@@ -89,7 +89,7 @@ func (d *goodsDao) Update(g model.Goods) error {
 func (d *goodsDao) Delete(id int) error {
 	var g model.Goods
 	g.ID = uint(id)
-	if e := db.DB.Debug().Take(&g).Error; e != nil {
+	if e := db.DB.Take(&g).Error; e != nil {
 		if errors.Is(e, gorm.ErrRecordNotFound) {
 			return code.RecordNotFoundErr
 		}
@@ -99,7 +99,7 @@ func (d *goodsDao) Delete(id int) error {
 	if g.ID == 0 {
 		return code.RecordNotFoundErr
 	}
-	if e := db.DB.Debug().Delete(&g).Error; e != nil {
+	if e := db.DB.Delete(&g).Error; e != nil {
 		log.Println(e)
 		return e
 	}

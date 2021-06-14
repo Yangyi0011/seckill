@@ -21,7 +21,7 @@ func NewUserDao () *userDao {
 // Insert 添加用户
 func (d *userDao) Insert(u model.User) error {
 	u.CreatedAt = model.LocalTime(time.Now())
-	if e := db.DB.Debug().Create(&u).Error; e != nil {
+	if e := db.DB.Create(&u).Error; e != nil {
 		return code.DBErr
 	}
 	return nil
@@ -30,7 +30,7 @@ func (d *userDao) Insert(u model.User) error {
 // QueryByUsername 通过 username 查询用户信息
 func (d *userDao) QueryByUsername(username string) (model.User, error) {
 	var user model.User
-	if e := db.DB.Debug().Where("username = ?", username).Take(&user).Error; e != nil {
+	if e := db.DB.Where("username = ?", username).Take(&user).Error; e != nil {
 		if errors.Is(e, gorm.ErrRecordNotFound) {
 			return user, code.RecordNotFoundErr
 		}
