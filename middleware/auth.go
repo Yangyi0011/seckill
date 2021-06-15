@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"seckill/infra/secret"
 	"seckill/infra/utils/response"
@@ -32,7 +31,6 @@ func Auth() gin.HandlerFunc {
 			response.Fail(ctx, result)
 			return
 		}
-		log.Println("auth 认证通过")
 		// 认证通过则刷新 JWT 过期时间
 		_, _ = j.RefreshToken(auth)
 
