@@ -86,6 +86,11 @@ func (s *orderService) SecondKill(userId, goodsId int) (e error) {
 	}
 	// 没有库存了，商品已售罄
 	if stock < 0 {
+		// 把预减的库存加回去
+		if e = s.goodsService.IncrStock(goodsId); e != nil {
+			e = code.RedisErr
+			return
+		}
 		e = code.GoodsSaleOut
 		return
 	}
@@ -290,6 +295,7 @@ func createOrderId() string {
 // 尝试获取锁
 func (s *orderService) tryLock(userId, goodsId int, lockId int64) (err error) {
 	var res bool
+	// 用以识别具体的个人
 	k := fmt.Sprintf(LockKey, userId, goodsId)
 	if res, err = s.redis.SetNX(ctx, k, lockId, time.Minute).Result(); err != nil {
 		log.Printf("redis.SetNx() failed, err: %v", err)
