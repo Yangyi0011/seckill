@@ -18,7 +18,7 @@ Content-Type: application/json
 ### 初始化秒杀商品
 POST http://localhost:8080/api/goods/seckillInit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNTg0Mjg3LCJqdGkiOiIxIiwiaWF0IjoxNjIzNTgwNjg3LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzU4MDY4Nywic3ViIjoiYXV0aCJ9.G3-lTW-rdpfUFrwSWVanTco9LCSRNOYxSbs-Yn7-A8w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNzYzNzE5LCJqdGkiOiIxIiwiaWF0IjoxNjIzNzYwMTE5LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzc2MDExOSwic3ViIjoiYXV0aCJ9.S5uiX9ZoZEo6hmEi0c8EqdrsnhJzX_ZsOp8jqBZzlJM
 
 {}
 
@@ -30,36 +30,37 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZ
 ### 更新商品信息
 PUT http://localhost:8080/api/goods
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNDkxMDEwLCJqdGkiOiIxIiwiaWF0IjoxNjIzNDg3NDEwLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzQ4NzQxMCwic3ViIjoiYXV0aCJ9.B3Y81LgV0WcJdGDn5-jkUwRoa63cWRIxwSFdewurQxk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNjcxODg3LCJqdGkiOiIxIiwiaWF0IjoxNjIzNjY4Mjg3LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzY2ODI4Nywic3ViIjoiYXV0aCJ9.1G06DJ0LUaEGFnpJL2u9dU8p4OwRWrLuNNpfkF1llIM
 
 {
-  "amount": 100,
+  "amount": 0,
   "endTime": "2021-06-20 00:00:00",
   "id": 1,
   "img": "",
-  "name": "秒杀商品-2",
-  "originPrice": 10,
-  "price": 5.5,
-  "startTime": "2021-06-18 00:00:00",
-  "stock": 99
+  "name": "",
+  "originPrice": 0,
+  "price": 0,
+  "startTime": "2021-06-14 20:00:00",
+  "stock": 0
 }
 
 ### 通过 id 查询商品
-GET http://localhost:8080/api/goods/2
+GET http://localhost:8080/api/goods/1
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoidG9tIiwicGFzc3dvcmQiOiIxMjMiLCJraW5kIjowLCJhdWQiOiJ0b20iLCJleHAiOjE2MjM3NTI0NjIsImp0aSI6IjIiLCJpYXQiOjE2MjM3NDg4NjIsImlzcyI6InNlY29uZCBraWxsIiwibmJmIjoxNjIzNzQ4ODYyLCJzdWIiOiJhdXRoIn0.TnZezFP7tVExjVLi1mE_-HPwqA_t8V1-j2w39wN1kAo
 
 ### 添加秒杀商品
 POST http://localhost:8080/api/goods
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNTIzNzYzLCJqdGkiOiIxIiwiaWF0IjoxNjIzNTIwMTYzLCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzUyMDE2Mywic3ViIjoiYXV0aCJ9.EYbn3WeIplcAkd39YLKjb2SLXbw7MbvScxqbO6mSVGI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiamVycnkiLCJwYXNzd29yZCI6IjEyMyIsImtpbmQiOjEsImF1ZCI6ImplcnJ5IiwiZXhwIjoxNjIzNzUyMzY3LCJqdGkiOiIxIiwiaWF0IjoxNjIzNzQ4NzY3LCJpc3MiOiJzZWNvbmQga2lsbCIsIm5iZiI6MTYyMzc0ODc2Nywic3ViIjoiYXV0aCJ9.naSrsdeq8YwUjdEck2oUT22NEB1ZzNYWyJqgAtdbz5Q
 
 {
   "amount": 10,
-  "name": "测试商品-3",
-  "originPrice": 10000,
+  "name": "测试商品-2",
+  "originPrice": 100,
   "endTime": "2021-06-20 00:00:00",
-  "price": 99,
-  "startTime": "2021-06-18 00:00:00",
+  "price": 9.9,
+  "startTime": "2021-06-15 17:00:00",
   "stock": 10
 }
 

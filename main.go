@@ -21,7 +21,7 @@ func init() {
 
 func main() {
 	// 启用发布模式
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	// 启动
 	err := router.InitRouter().Run()
 	if err != nil {
