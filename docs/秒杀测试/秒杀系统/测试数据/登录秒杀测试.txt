@@ -1,0 +1,2 @@
+username,password,ip,goodsId
+tom,123,191.138.106.172,1

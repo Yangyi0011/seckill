@@ -1,0 +1,2 @@
+username,password,kind,ip,name,img,originPrice,price,amount,stock,startTime,endTime
+jerry,123,1,127.0.0.1,商品-1,,100,9.9,100,100,2021-06-14 22:00:00,2021-07-01 00:00:00
