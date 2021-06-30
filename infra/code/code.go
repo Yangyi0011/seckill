@@ -7,6 +7,7 @@ var (
 	ConvertErr        = buildCode(5010, "对象转换错误")
 	RequestParamErr   = buildCode(5011, "请求参数错误")
 	TooManyRequests   = buildCode(5040, "请求频繁")
+	SysBusyErr        = buildCode(5041, "系统正忙")
 	RecordNotFoundErr = buildCode(5044, "数据不存在或已被删除")
 	SerializeErr      = buildCode(5050, "序列化错误")
 	UnknownErr        = buildCode(5099, "未知错误")

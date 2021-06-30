@@ -24,8 +24,8 @@ var (
 	ctx = context.Background()
 )
 
-// RateLimit 对当个 IP 的请求进行限流
-func RateLimit() gin.HandlerFunc {
+// UserLimit 对当个 IP 的请求进行限流
+func UserLimit() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var (
 			result model.Result

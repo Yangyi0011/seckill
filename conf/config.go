@@ -53,6 +53,10 @@ type Order struct {
 
 // RateLimit 限流配置信息
 type RateLimit struct {
+	// 系统每秒最多只能接受多少次请求
+	Total int64 `yaml:"total"`
+	Rate int64 `yaml:"rate"`
+	// 用户在 time 秒之内最多能请求 count 次
 	Time  int64 `yaml:"time"`
 	Count int64 `yaml:"count"`
 }

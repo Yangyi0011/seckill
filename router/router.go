@@ -56,7 +56,8 @@ func ValidateJSONDateType(field reflect.Value) interface{} {
 func InitRouter() * gin.Engine{
 	//myRouter.Use(middleware.CostumerLog())
 	myRouter.Use(middleware.Cors())
-	myRouter.Use(middleware.RateLimit())
+	myRouter.Use(middleware.SysLimit())
+	myRouter.Use(middleware.UserLimit())
 
 	initService()
 	initHandler()
