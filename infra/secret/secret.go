@@ -22,7 +22,6 @@ const (
 type CustomClaims struct {
 	UserId uint `json:"userId"`
 	Username string `json:"username"`
-	Password string `json:"password"`
 	Kind     int8 `json:"kind"`
 	jwt.StandardClaims
 }

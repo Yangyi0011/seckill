@@ -93,7 +93,6 @@ func (s *userService) generateToken(user model.User) (string, error) {
 	claims := secret.CustomClaims{
 		UserId: user.ID,
 		Username: user.Username,
-		Password: user.Password,
 		Kind:     user.Kind,
 		StandardClaims: jwt.StandardClaims{
 			Audience:  user.Username,              // 受众
